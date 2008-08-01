@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/earworm
+lib/earworm.rb
+test/test_earworm.rb
