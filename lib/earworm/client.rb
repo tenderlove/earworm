@@ -15,6 +15,14 @@ module Earworm
           'enc'  => '',
         }.merge(Fingerprint.new(options[:file]).to_hash)
       end
+      if options.key?(:puid)
+        post_opts = {
+          'cid'  => @client_id,
+          'cvr'  => "Earworm #{VERSION}",
+          'rmd'  => 1,
+          'enc'  => '',
+        }.merge(PUID.new(options[:puid]).to_hash)
+      end
       xml = Net::HTTP.post_form(URI.parse(URL), post_opts).body
       parser = REXML::Parsers::PullParser.new(xml)
       track = Track.new

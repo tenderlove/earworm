@@ -33,13 +33,12 @@ class EarwormTest < Test::Unit::TestCase
     assert info.puid_list.length > 0
   end
 
-  #def test_idenfity_puid
-  #  ew = Earworm.new(@key)
-  #  info = ew.identify(:puid => 'f39d4c68-ab2d-5067-9a1a-c6b45a367906')
-  #  assert info
-  #  assert info.artist_name
-  #  assert info.title
-  #  assert info.puid_list.length > 0
-  #  p info
-  #end
+  def test_idenfity_puid
+    ew = Earworm::Client.new(@key)
+    info = ew.identify(:puid => 'f39d4c68-ab2d-5067-9a1a-c6b45a367906')
+    assert info
+    assert info.artist_name
+    assert info.title
+    assert info.puid_list.length > 0
+  end
 end
