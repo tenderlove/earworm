@@ -10,7 +10,9 @@ module Earworm
       if options.key?(:file)
         post_opts = {
           'cid'  => @client_id,
-          'cvr'  => 'Example 0.9.3',
+          'cvr'  => "Earworm #{VERSION}",
+          'rmd'  => 1,
+          'enc'  => '',
         }.merge(Fingerprint.new(options[:file]).to_hash)
       end
       xml = Net::HTTP.post_form(URI.parse(URL), post_opts).body

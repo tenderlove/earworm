@@ -32,8 +32,6 @@ module Earworm
         'brt'  => 0,
         'fmt'  => 'wav',
         'dur'  => info[:milliseconds],
-        'rmd'  => 1,
-        'enc'  => '',
       }
     end
 
