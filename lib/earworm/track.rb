@@ -1,4 +1,4 @@
-class Earworm
+module Earworm
   class Track
     attr_accessor :title, :artist_name, :puid_list
     def initialize

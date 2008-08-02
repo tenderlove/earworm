@@ -19,13 +19,13 @@ class EarwormTest < Test::Unit::TestCase
   end
 
   def test_fingerprint
-    ew = Earworm.new('123')
+    ew = Earworm::Client.new('123')
     key = ew.fingerprint(@mp3)
     assert key
   end
 
   def test_identify_file
-    ew = Earworm.new(@key)
+    ew = Earworm::Client.new(@key)
     info = ew.identify(:file => @mp3)
     assert info
     assert info.artist_name
