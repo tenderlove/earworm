@@ -8,6 +8,7 @@ require 'earworm.rb'
 
 Hoe.new('earworm', Earworm::VERSION) do |p|
   p.developer('Aaron Patterson', 'aaronp@rubyforge.org')
+  p.extra_deps = [['icanhasaudio', '>=0.1.1']]
 end
 
 # vim: syntax=Ruby

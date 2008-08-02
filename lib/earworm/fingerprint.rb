@@ -14,7 +14,9 @@ module Earworm
         tmpfile = case @thing
                   when /mp3$/
                     decode_mp3(@thing)
-                  when /wav$/
+                  when /ogg$/
+                    decode_ogg(@thing)
+                  else # Assume its a wav file
                     @thing
                   end
         File.open(tmpfile, 'rb') { |f|
@@ -60,15 +62,21 @@ module Earworm
       info
     end
 
-    def decode_mp3(filename)
-      reader = Audio::MPEG::Decoder.new
-      name = File.join(Dir::tmpdir, "#{File.basename(filename, '.mp3')}.wav")
-      File.open(filename, 'rb') { |input|
-        File.open(name, 'wb') { |tmpfile|
-          reader.decode(input, tmpfile)
+    {
+      'ogg' => Audio::OGG::Decoder,
+      'mp3' => Audio::MPEG::Decoder,
+    }.each do |type,klass|
+      define_method(:"decode_#{type}") do |filename|
+        reader = klass.new
+        name = File.join(Dir::tmpdir,
+          "#{File.basename(filename, ".#{type}")}.wav")
+        File.open(filename, 'rb') { |input|
+          File.open(name, 'wb') { |tmpfile|
+            reader.decode(input, tmpfile)
+          }
         }
-      }
-      name
+        name
+      end
     end
   end
 end

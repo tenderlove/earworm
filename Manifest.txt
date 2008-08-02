@@ -4,4 +4,9 @@ README.txt
 Rakefile
 bin/earworm
 lib/earworm.rb
+lib/earworm/client.rb
+lib/earworm/fingerprint.rb
+lib/earworm/puid.rb
+lib/earworm/track.rb
+lib/earworm_lib.rb
 test/test_earworm.rb

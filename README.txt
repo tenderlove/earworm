@@ -1,32 +1,50 @@
 = earworm
 
-* FIX (url)
+* http://earworm.rubyforge.org
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Earworm can identify unknown music using MusicDNS and libofa.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+* Identifies mp3, ogg, and wav files.
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+Identify an unknown audio file:
+
+  ew = Earworm::Client.new('MY Music DNS Key')
+  info = ew.identify(:file => '/home/aaron/unknown.wav')
+  puts "#{info.artist_name} - #{info.title}"
+
+Fetch info for a PUID:
+
+  ew = Earworm::Client.new('MY Music DNS Key')
+  info = ew.identify(:puid => 'f39d4c68-ab2d-5067-9a1a-c6b45a367906')
+  puts "#{info.artist_name} - #{info.title}"
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* {MusicDNS key}[https://secure.musicip.com/dns/index.jsp]
+* libofa
+* icanhasaudio
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+OS X:
+* sudo port install libogg libvorbis lame libofa
+* gem install earworm
+
+Linux:
+* sudo yum install libogg-devel libvorbis-devel lame-devel libofa
+* gem install earworm
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2008 FIX
+Copyright (c) 2008 {Aaron Patterson}[http://tenderlovemaking.com/]
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
