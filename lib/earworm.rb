@@ -1,6 +1,7 @@
 require 'icanhasaudio'
 require 'tempfile'
 require 'earworm_lib'
+require 'earworm/track'
 require 'rexml/document'
 require 'rexml/parsers/pullparser'
 
@@ -48,12 +49,22 @@ class Earworm
       }
     end
     xml = Net::HTTP.post_form(URI.parse(URL), post_opts).body
-    puts xml
-    require 'pp'
     parser = REXML::Parsers::PullParser.new(xml)
+    track = Track.new
     while parser.has_next?
-      pp parser.pull
+      thing = parser.pull
+      if thing.start_element?
+        case thing[0]
+        when 'title'
+          track.title = parser.pull[0]
+        when 'name'
+          track.artist_name = parser.pull[0]
+        when 'puid'
+          track.puid_list << thing[1]['id']
+        end
+      end
     end
+    track
   end
 
   def fingerprint(filename)
@@ -68,6 +79,8 @@ class Earworm
       tmpfile = case filename
                 when /mp3$/
                   decode_mp3(filename)
+                when /wav$/
+                  filename
                 end
       File.open(tmpfile, 'rb') { |f|
         return fingerprint_io(f)
@@ -91,10 +104,17 @@ class Earworm
     raise unless header == Audio::MPEG::Encoder::WAV_ID_RIFF
     info = Audio::MPEG::Encoder.parse_wave_header(io)
     bytes_in_seconds = 135 * info[:in_samplerate] * 2 * info[:num_channels]
-    data = io.read(bytes_in_seconds)
+    read_bytes =
+      if info[:bytes_in_seconds] > bytes_in_seconds
+        bytes_in_seconds
+      else
+        info[:bytes_in_seconds]
+      end
+
+    data = io.read(read_bytes)
     info[:fpt] = EarwormLib.ofa_create_print( data,
                                               0,
-                                              bytes_in_seconds/2,
+                                              read_bytes/2,
                                               info[:in_samplerate], 1)
     info
   end
