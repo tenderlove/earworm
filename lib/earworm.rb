@@ -2,7 +2,7 @@ require 'icanhasaudio'
 require 'tempfile'
 require 'earworm_lib'
 require 'rexml/document'
-require 'rexml/parsers'
+require 'rexml/parsers/pullparser'
 
 class Earworm
   VERSION = '0.0.1'
@@ -47,10 +47,13 @@ class Earworm
         'enc'  => '',
       }
     end
-    xml = REXML::Document.new(
-      Net::HTTP.post_form(URI.parse(URL), post_opts).body
-    )
-    p xml
+    xml = Net::HTTP.post_form(URI.parse(URL), post_opts).body
+    puts xml
+    require 'pp'
+    parser = REXML::Parsers::PullParser.new(xml)
+    while parser.has_next?
+      pp parser.pull
+    end
   end
 
   def fingerprint(filename)
