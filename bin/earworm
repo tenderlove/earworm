@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'earworm'
+require 'yaml'
+
+CONFIG = File.join(File.expand_path(ENV['HOME']), '.earworm')
+config = YAML.load_file(CONFIG)
+
+(puts("USAGE: #{$0} unknown_file") || exit) unless ARGV[0]
+
+ew = Earworm::Client.new(config['key'])
+track =
+  if File.exists?(ARGV[0])
+    ew.identify(:file => ARGV[0])
+  else
+    ew.identify(:puid => ARGV[0])
+  end
+
+puts "Title: #{track.title}" if track.title
+puts "Artist: #{track.artist}" if track.artist
+track.puid_list.each do |puid|
+  puts "PUID: #{puid}"
+end
+
