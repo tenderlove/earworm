@@ -8,23 +8,7 @@ module Earworm
     def to_hash
       return @hash if @hash
       info = nil
-      if @thing.is_a?(IO)
-        info = wav_info_for(@thing)
-      else
-        tmpfile = case @thing
-                  when /mp3$/
-                    decode_mp3(@thing)
-                  when /ogg$/
-                    decode_ogg(@thing)
-                  else # Assume its a wav file
-                    @thing
-                  end
-        File.open(tmpfile, 'rb') { |f|
-          info = wav_info_for(f)
-        }
-      end
       @hash = {
-        'fpt'  => info[:fpt],
         'art'  => 'unknown',
         'ttl'  => 'unknown',
         'alb'  => 'unknown',
@@ -33,8 +17,32 @@ module Earworm
         'yrr'  => 0,
         'brt'  => 0,
         'fmt'  => 'wav',
-        'dur'  => info[:milliseconds],
       }
+      if @thing.is_a?(IO)
+        info = wav_info_for(@thing)
+      else
+        tmpfile = case @thing
+                  when /mp3$/
+                    @hash['fmt'] = 'mp3'
+                    begin
+                      require 'id3lib'
+                      @hash = @hash.merge(id3_info_for(@thing))
+                    rescue LoadError
+                    end
+                    decode_mp3(@thing)
+                  when /ogg$/
+                    @hash['fmt'] = 'ogg'
+                    decode_ogg(@thing)
+                  else # Assume its a wav file
+                    @thing
+                  end
+        File.open(tmpfile, 'rb') { |f|
+          info = wav_info_for(f)
+        }
+      end
+      @hash['fpt'] = info[:fpt]
+      @hash['dur'] = info[:milliseconds]
+      @hash
     end
 
     def to_s
@@ -60,6 +68,18 @@ module Earworm
                                                 read_bytes/2,
                                                 info[:in_samplerate], 1)
       info
+    end
+
+    def id3_info_for(filename)
+      tag = ID3Lib::Tag.new(filename)
+      {
+        'art'  => tag.artist,
+        'ttl'  => tag.title,
+        'alb'  => tag.album,
+        'tnm'  => tag.track[/^(\d+)/],
+        'gnr'  => tag.genre,
+        'yrr'  => tag.year,
+      }
     end
 
     {
