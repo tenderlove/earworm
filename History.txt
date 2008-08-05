@@ -1,3 +1,10 @@
+=== 0.0.2
+
+* 1 Bugfix
+
+  * Oop!  Forgot a require.  Thanks Mike McKay!
+  * Added better error messaging.  Thanks again to Mike McKay.
+
 === 0.0.1 / 2008-08-01
 
 * 1 major enhancement
