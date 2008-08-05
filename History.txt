@@ -1,6 +1,6 @@
 === 0.0.2
 
-* 1 Bugfix
+* 2 Bugfixes
 
   * Oop!  Forgot a require.  Thanks Mike McKay!
   * Added better error messaging.  Thanks again to Mike McKay.
