@@ -7,6 +7,7 @@ require 'earworm/fingerprint'
 require 'earworm/client'
 require 'rexml/document'
 require 'rexml/parsers/pullparser'
+require 'net/http'
 
 module Earworm
   VERSION = '0.0.1'

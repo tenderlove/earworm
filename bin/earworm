@@ -5,11 +5,20 @@ require 'earworm'
 require 'yaml'
 
 CONFIG = File.join(File.expand_path(ENV['HOME']), '.earworm')
-config = YAML.load_file(CONFIG)
+begin
+  config = YAML.load_file(CONFIG)
+rescue
+  raise "Please create a .earworm file in your home directory"
+end
 
 (puts("USAGE: #{$0} unknown_file") || exit) unless ARGV[0]
 
+begin
 ew = Earworm::Client.new(config['key'])
+rescue
+  raise "\n\nYou need to generate a key here: http://www.musicip.com/dns/license.jsp\n then put the key into your .earworm file like this:
+key: 012321312AA\n"
+end
 track =
   if File.exists?(ARGV[0])
     ew.identify(:file => ARGV[0])
